@@ -1,7 +1,7 @@
 .ONESHELL:
 run:
 	cls
-	python manage.py runserver
+	uvicorn DjangoBlog.asgi:application --reload
 migrate:
 	cls
 	if "$(app)"=="" (
