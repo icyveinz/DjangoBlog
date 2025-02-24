@@ -18,3 +18,6 @@ create:
 	) else (
 		python manage.py startapp $(app)
 	)
+genuser:
+	cls
+	python manage.py createsuperuser
