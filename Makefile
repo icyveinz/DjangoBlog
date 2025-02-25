@@ -1,7 +1,7 @@
 .ONESHELL:
 run:
 	cls
-	uvicorn DjangoBlog.asgi:application --reload
+	uvicorn DjangoBlog.asgi:application --reload --port 8000
 migrate:
 	cls
 	if "$(app)"=="" (
