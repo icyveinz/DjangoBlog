@@ -1,0 +1,40 @@
+const gulp = require('gulp');
+const imageResize = require('gulp-image-resize');
+const rename = require('gulp-rename');
+const webp = require('gulp-webp');
+
+const sizes = [500, 1000, 2000];
+
+gulp.task('resize-images', () => {
+    return sizes.map(size => {
+        return gulp.src('src/images/**/*.{jpg,png}')
+            .pipe(imageResize({ width: size, imageMagick: true }))
+            .pipe(rename({ suffix: `-${size}w` }))
+            .pipe(gulp.dest('dist/images'));
+    });
+});
+
+// Optional: Convert to WebP format for modern browsers
+gulp.task('convert-webp', () => {
+    return gulp.src('dist/images/**/*.{jpg,png}')
+        .pipe(webp())
+        .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('default', gulp.series('resize-images', 'convert-webp'));
+
+<img
+    src="images/photo-1000.jpg"
+    srcset="
+        images/photo-500.jpg 500w,
+        images/photo-1000.jpg 1000w,
+        images/photo-2000.jpg 2000w
+    "
+    sizes="(max-width: 600px) 500px, (max-width: 1200px) 1000px, 2000px"
+    alt="Example image"
+    loading="lazy"
+    width="1000" height="600">
+
+
+Пример как оптимизировать изображения и работать с ними чтобы избежать потерь рейтинга на
+First Contentful Paint Largest Contentful Paint и CLS
