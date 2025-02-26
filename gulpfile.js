@@ -3,6 +3,7 @@ const sass = require('gulp-sass')(require('sass')); // Ensure using sass
 const cleanCSS = require('gulp-clean-css');
 const htmlmin = require('gulp-htmlmin');
 const rename = require('gulp-rename');
+const uglify = require('gulp-uglify');
 const shell = require('gulp-shell');
 
 gulp.task('styles', function() {
@@ -32,12 +33,26 @@ gulp.task('html-minimizer', function() {
         }));
 });
 
+gulp.task('minify-js', () => {
+    return gulp.src(['**/*.js', '!node_modules/**', '!gulpfile.js'], { base: './' })
+        .pipe(uglify())
+        .pipe(rename(function(path) {
+            if (!path.basename.includes('-min')) {
+                path.basename += '-min';
+            }
+        }))
+        .pipe(gulp.dest(function(file) {
+            return file.base;
+        }));
+});
+
 gulp.task('sync', gulp.series(
     shell.task([
         'cls'
     ]),
     'styles',
     'html-minimizer',
+    'minify-js',
     shell.task([
         'python manage.py runserver'
     ])
@@ -49,6 +64,7 @@ gulp.task('async', gulp.series(
     ]),
     'styles',
     'html-minimizer',
+    'minify-js',
     shell.task([
         'uvicorn DjangoBlog.asgi:application --reload --port 8000'
     ])
