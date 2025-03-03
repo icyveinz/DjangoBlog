@@ -1,7 +1,23 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
+
+from blog.forms import EmailPostForm
 from blog.models import Post
+
+
+def post_share(request, post_id):
+    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
+    if request.method == 'POST':
+        # Форма была передана на обработку
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            # Поля формы успешно прошли валидацию
+            cd = form.cleaned_data
+            # ... отправить электронное письмо
+    else:
+        form = EmailPostForm()
+    return render(request, 'blog/post/share-min.html', {'post': post, 'form': form})
 
 
 # Create your views here.
